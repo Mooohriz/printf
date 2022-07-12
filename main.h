@@ -21,5 +21,6 @@ int print_s(va_list args);
 int print_percent(va_list args);
 int print_d(va_list args);
 int print_i(va_list args);
+int (*_printf(char x))(var_list);
 
 #endif
