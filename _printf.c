@@ -1,57 +1,53 @@
-#include "main.h"
-#include <stdio.h>
 #include <stdarg.h>
-
+#include <stdio.h>
+#include <stdlib.h>
+#include "main.h"
+#include <stddef.h>
 /**
-*@c: character 
-*@args: argument character
-*Return: the number of characters
-*/
-
-int print_c(va_list args)
-{
-int c;
-c = va_arg(args, int);
-	return (_putchar(c));
-}
-/**
-*@s: string 
-*@args: argument character
-*Return: the number of characters
-*/
-
-int print_s(va_list args)
-{
-	int i, count = 0;
-	char *str;
-
-	i = 0;
-	str = va_arg(args, char*);
-	if (str == NULL)
-		str = "(null)";
-	while (str[i] != '\0')
-	{
-		_putchar(str[i]);
-		i++;
-		count++;
-	}
-	return (count);
-}
-/**
- * print_percentage - pass the percentage string
- * @args: string  argument
- * Return: return the percentage string
- *
+ * _printf - recreates the printf function
+ * @format: string with format specifier
+ * Return: number of characters printed
  */
-int print_percentage(va_list args)
+int _printf(const char *format, ...)
 {
-	char *str;
-
-	str = "%";
-	if (va_arg(args, int) == *str)
+	if (format != NULL)
 	{
-		return (*str);
+		int count = 0, i;
+		int (*m)(va_list);
+		va_list args;
+
+		va_start(args, format);
+		i = 0;
+		if (format[0] == '%' && format[1] == '\0')
+			return (-1);
+		while (format != NULL && format[i] != '\0')
+		{
+			if (format[i] == '%')
+			{
+				if (format[i + 1] == '%')
+				{
+					count += _putchar(format[i]);
+					i += 2;
+				}
+				else
+				{
+					m = prntfunc(format[i + 1]);
+					if (m)
+						count += m(args);
+					else
+						count = _putchar(format[i]) + _putchar(format[i + 1]);
+					i += 2;
+				}
+			}
+			else
+			{
+				count += _putchar(format[i]);
+				i++;
+			}
+		}
+		va_end(args);
+		return (count);
 	}
-	return (*str);
+	return (-1);
 }
 
